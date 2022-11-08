@@ -16,15 +16,15 @@ IO.puts("Host: " <> host)
 
 get_node = fn -> String.to_atom(UUID.uuid1 <> "@" <> host) end
 
-# Use get_dist_config.(n) to generate a multi-node configuration 
+# Use get_dist_config.(n) to generate a multi-node configuration
 # consisting of n processes, each one on a different node
-get_dist_config = fn n -> for i <- (1..n), into: %{}, 
+get_dist_config = fn n -> for i <- (1..n), into: %{},
         do: {String.to_atom("p"<>to_string(i)), {get_node.(), {:val, Enum.random(201..210)}}} end
 
 
-# Use get_local_config.(n) to generate a single-node configuration 
+# Use get_local_config.(n) to generate a single-node configuration
 # consisting of n processes, all running on the same node
-get_local_config = fn n -> for i <- 1..n, into: %{}, 
+get_local_config = fn n -> for i <- 1..n, into: %{},
         do: {String.to_atom("p"<>to_string(i)), {:local, {:val, Enum.random(201..210)}}} end
 
 test_suite = [
@@ -42,15 +42,15 @@ test_suite = [
 
 Node.stop
 Node.start(get_node.(), :shortnames)
-Enum.reduce(test_suite, length(test_suite), 
+Enum.reduce(test_suite, length(test_suite),
      fn ({func, config, n, doc}, acc) ->
         IO.puts(:stderr, "============")
         IO.puts(:stderr, "#{inspect doc}, #{inspect n} time#{if n > 1, do: "s", else: ""}")
         IO.puts(:stderr, "============")
         for _ <- 1..n do
                 res = TestHarness.test(func, Enum.shuffle(Map.to_list(config)))
-                {vl, al, ll} = Enum.reduce(res, {[], [], []}, 
-                   fn {_, _, s, v, a, {:message_queue_len, l}}, {vl, al, ll} -> 
+                {vl, al, ll} = Enum.reduce(res, {[], [], []},
+                   fn {_, _, s, v, a, {:message_queue_len, l}}, {vl, al, ll} ->
                         if s != :killed, do: {[v | vl], [a | al], [l | ll]},
                         else: {vl, al, ll}
                    end
@@ -72,7 +72,7 @@ Enum.reduce(test_suite, length(test_suite),
                 end
         end
         IO.puts(:stderr, "============#{if acc > 1, do: "\n", else: ""}")
-        acc - 1 
+        acc - 1
      end)
 Node.stop
 System.halt
