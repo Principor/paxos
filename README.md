@@ -1,3 +1,6 @@
+# Overview
+The following is an implementation of the paxos algorithm written in Elixir as coursework for my Computer Science MSci degree. The algorithm itself can be found in paxos.ex, which was written completely by me. It has been tested in numerous adverse conditions, with many nodes randomly changing, and still manages to produce the correct result.
+
 # Files:
 - paxos.ex: main Paxos layer source
 - beb.ex: best effort broadcast (BEB) layer the Paxos layer is built upon. 
